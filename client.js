@@ -2,7 +2,7 @@
  * Our Free Model — browser half.
  *
  * Contributes three things to the web shell:
- *   1. a settings section (`settings.section` id `our-free-model`) holding the
+ *   1. a settings section (`settings.section` id `our-free-model-fork`) holding the
  *      model roster with live availability, the usage dashboard, the OpenAI
  *      forward listener and the plugin's own switches;
  *   2. a first-run announcement (`settings.onboarding`) that is versioned, so
@@ -10,7 +10,7 @@
  *   3. nothing else — no shadowing of the stock model picker, whose grouping by
  *      provider route is exactly the mechanism this plugin uses for its tag.
  *
- * Data is read over the plugin's own same-origin `/api/our-free-model/*` routes
+ * Data is read over the plugin's own same-origin `/api/our-free-model-fork/*` routes
  * rather than a typed Remote binding, because those routes are served by the same
  * host process on every kernel line this plugin targets.
  *
@@ -2150,7 +2150,7 @@ window.__ModuleLoader__.load({
     // 相对路径随页面 base 走，根路径部署下与原值完全一致。解析不了（无 document
     // 的宿主、非常规 base）就退回根路径原值——行为不比修复前差。
     const API = (() => {
-      try { return new URL('api/our-free-model', document.baseURI).pathname } catch { return '/api/our-free-model' }
+      try { return new URL('api/our-free-model-fork', document.baseURI).pathname } catch { return '/api/our-free-model-fork' }
     })()
     const SEASON = ['#4C8DFF', '#3ECFA0', '#F2A65A', '#E36AA6', '#8B7BF0', '#39B8C4', '#D9743E', '#7BB24A']
 
@@ -2771,8 +2771,8 @@ window.__ModuleLoader__.load({
       const roster = only === undefined ? summary.catalog
         : only === 'eac' ? summary.catalog.filter(m => m.channel === 'eac')
           : summary.catalog.filter(m => m.channel !== 'eac')
-      const available = roster.filter(m => m.route === 'our-free-model' || (only === 'eac' && m.channel === 'eac'))
-      const limited = roster.filter(m => m.route === 'our-free-model-region')
+      const available = roster.filter(m => m.route === 'our-free-model-fork' || (only === 'eac' && m.channel === 'eac'))
+      const limited = roster.filter(m => m.route === 'our-free-model-fork-region')
       // 只有拿到过明确判定（网关答过 /eac/status）且未授权时才上锁：状态未知
       // 不该显示一把凭空的锁，网关不可达时本地记录仍算已授权。
       const locked = auth !== undefined && auth.available === true && auth.authorized !== true
@@ -5907,7 +5907,7 @@ window.__ModuleLoader__.load({
             h('span', { className: 'spacer' }),
             page === 0 ? h(Button, { kind: 'ghost', onClick: finish }, t('ann.later')) : h(Button, { kind: 'ghost', onClick: () => setPage(p => Math.max(0, p - 1)) }, '‹'),
             last
-              ? h(Button, { kind: 'primary', onClick: async () => { await finish(); openSection?.('our-free-model') } }, t('ann.openSettings'))
+              ? h(Button, { kind: 'primary', onClick: async () => { await finish(); openSection?.('our-free-model-fork') } }, t('ann.openSettings'))
               : h(Button, { kind: 'primary', onClick: () => setPage(p => Math.min(PAGES.length - 1, p + 1)) }, '›'))))
       // Out of `#root` and onto the body: the shell hides `#root` (opacity/inert)
       // while its own first-run surface is up, and no descendant escapes that.
@@ -5959,7 +5959,7 @@ window.__ModuleLoader__.load({
 
     function apply(ctx) {
       const t = ctx.locale.bind(NS)
-      ctx.effect(() => ctx.locale.register(NS, { zh: DICT.zh, en: DICT.en }), 'our-free-model: dictionaries')
+      ctx.effect(() => ctx.locale.register(NS, { zh: DICT.zh, en: DICT.en }), 'our-free-model-fork: dictionaries')
 
       ctx.effect(() => {
         const style = document.createElement('style')
@@ -5967,7 +5967,7 @@ window.__ModuleLoader__.load({
         style.textContent = CSS
         document.head.appendChild(style)
         return () => style.remove()
-      }, 'our-free-model: styles')
+      }, 'our-free-model-fork: styles')
 
       // ── push subscription ───────────────────────────────────────────────────
       // One EventSource for the whole app surface: new announcements become
@@ -6053,7 +6053,7 @@ window.__ModuleLoader__.load({
           if (retryTimer !== undefined) { clearTimeout(retryTimer); retryTimer = undefined }
           try { source?.close() } catch { /* already closed */ }
         }
-      }, 'our-free-model: push subscription')
+      }, 'our-free-model-fork: push subscription')
 
       // A hot reload or in-app upgrade swaps this bundle while the page stays
       // open. The only durable marker across that swap is localStorage, so the
@@ -6077,11 +6077,11 @@ window.__ModuleLoader__.load({
           } catch { /* backend absent */ }
         })()
         return () => {}
-      }, 'our-free-model: reload notice')
+      }, 'our-free-model-fork: reload notice')
 
       ctx.slots.inject('settings.section', () => ctx.slots.register({
         name: 'settings.section',
-        id: 'our-free-model',
+        id: 'our-free-model-fork',
         order: 35,
         label: () => t('nav'),
         locale: NS,
@@ -6089,7 +6089,7 @@ window.__ModuleLoader__.load({
 
       ctx.slots.inject('settings.onboarding', () => ctx.slots.register({
         name: 'settings.onboarding',
-        id: 'our-free-model-announcement',
+        id: 'our-free-model-fork-announcement',
         order: -50,
         locale: NS,
       }, props => h(AnnouncementGate, { ...props, t: Object.assign(x => t(x), { locale: localeTag(ctx) }) })))
@@ -6151,7 +6151,7 @@ window.__ModuleLoader__.load({
     }
     exports.apply = apply
     exports.inject = inject
-    exports.name = 'our-free-model'
+    exports.name = 'our-free-model-fork'
     // Headless test seams use the same stub React as scripts/client-lint.mjs.
     exports.__test = {
       parseSafeHtml, safeUrl, sanitizeStyle, htmlToDom, buildHeatCells, Heatmap, ChannelsPage, UpgradePanel, useEacLogin, EacAuth,

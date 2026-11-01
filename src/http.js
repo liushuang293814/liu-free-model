@@ -238,7 +238,7 @@ export async function readHead(stream, limit, { signal, timeoutMs }) {
 export function classifyStreamFailure(error, signal) {
   if (error instanceof UpstreamError) return error
   if (signal?.aborted === true || error?.name === 'AbortError') return new UpstreamError('request aborted', CODE.aborted)
-  return new UpstreamError(`our-free-model: upstream stream read failed: ${error?.message ?? error}${transportCause(error)}`, CODE.transport)
+  return new UpstreamError(`our-free-model-fork: upstream stream read failed: ${error?.message ?? error}${transportCause(error)}`, CODE.transport)
 }
 
 /** The head is the one read with no line-level deadline behind it, so it needs its own. */
@@ -258,7 +258,7 @@ async function headRead(reader, signal, deadline) {
   let onAbort
   const pending = reader.read()
   const halted = new Promise((_, reject) => {
-    timer = setTimeout(() => reject(new UpstreamError('our-free-model: upstream sent no bytes before its deadline', CODE.timeout)),
+    timer = setTimeout(() => reject(new UpstreamError('our-free-model-fork: upstream sent no bytes before its deadline', CODE.timeout)),
       Math.max(0, deadline - Date.now()))
     timer.unref?.()
     onAbort = () => {
@@ -364,7 +364,7 @@ export async function postStreamed({ path, body, session, requestId, attribution
     // `TimeoutError`/user Error rather than `AbortError` — testing the name alone
     // reported a cancelled turn as `TRANSPORT`, which is retryable.
     if (signal?.aborted === true || error?.name === 'AbortError') throw new UpstreamError('request aborted', CODE.aborted)
-    throw new UpstreamError(`our-free-model: upstream request failed: ${error?.message ?? error}${transportCause(error)}`, CODE.transport)
+    throw new UpstreamError(`our-free-model-fork: upstream request failed: ${error?.message ?? error}${transportCause(error)}`, CODE.transport)
   }
 
   const setRetry = retryAfter(response.headers.get('retry-after'))
@@ -374,14 +374,14 @@ export async function postStreamed({ path, body, session, requestId, attribution
     try { payload = JSON.parse(text) } catch { payload = { error: { message: text.slice(0, 300) || `HTTP ${response.status}` } } }
     throw classifyFailure(response.status, payload, setRetry)
   }
-  if (response.body === null) throw new UpstreamError('our-free-model: upstream returned no body', CODE.empty)
+  if (response.body === null) throw new UpstreamError('our-free-model-fork: upstream returned no body', CODE.empty)
 
   // `Content-Type` is a hint, not a verdict: take the first bytes and let the body
   // say what it is. Whatever was spent reading them is replayed in front of the
   // stream, so nothing is buffered away and no frame is dropped.
   const head = await readHead(response.body, SNIFF_BYTES, { signal, timeoutMs })
   const shape = sniffBody(head.text)
-  if (shape === 'empty') throw new UpstreamError('our-free-model: upstream returned no body', CODE.empty)
+  if (shape === 'empty') throw new UpstreamError('our-free-model-fork: upstream returned no body', CODE.empty)
   if (shape === 'sse') {
     await readSse(replayStream(head), onData, signal, timeoutMs)
     return { status: response.status, headers: response.headers }
@@ -395,11 +395,11 @@ export async function postStreamed({ path, body, session, requestId, attribution
     if (/^\s*<(!doctype|html[\s>])/i.test(text)) {
       throw new UpstreamError(`the gateway's front proxy answered HTTP ${response.status} with an HTML error page — usually a WAF or body-size limit in front of the gateway`, CODE.client, { status: response.status })
     }
-    throw new UpstreamError(`our-free-model: unexpected non-SSE response: ${text.slice(0, 200)}`, CODE.server, { status: response.status })
+    throw new UpstreamError(`our-free-model-fork: unexpected non-SSE response: ${text.slice(0, 200)}`, CODE.server, { status: response.status })
   }
   let payload
   try { payload = JSON.parse(text) } catch {
-    throw new UpstreamError(`our-free-model: unexpected non-SSE response: ${text.slice(0, 200)}`, CODE.server, { status: response.status })
+    throw new UpstreamError(`our-free-model-fork: unexpected non-SSE response: ${text.slice(0, 200)}`, CODE.server, { status: response.status })
   }
   if (payload.error) throw classifyFailure(response.status, payload, setRetry)
   onData(JSON.stringify(payload))
@@ -457,7 +457,7 @@ export async function readSse(source, onData, signal, timeoutMs = 300000) {
     while (true) {
       const { value, done } = await next()
       if (done) break
-      if (Date.now() > deadline) throw new UpstreamError('our-free-model: upstream stream idle past its deadline', CODE.timeout)
+      if (Date.now() > deadline) throw new UpstreamError('our-free-model-fork: upstream stream idle past its deadline', CODE.timeout)
       if (value !== undefined) buffer += decoder.decode(value, { stream: true })
       let newline = buffer.indexOf('\n')
       while (newline !== -1) {
@@ -514,8 +514,8 @@ export async function getJson(path, { session, requestId, attributionUserAgent, 
   } catch (error) {
     if (error instanceof UpstreamError) throw error
     if (callerAborted || signal?.aborted === true) throw new UpstreamError('request aborted', CODE.aborted)
-    if (error?.name === 'AbortError') throw new UpstreamError('our-free-model: upstream GET timed out', CODE.timeout)
-    throw new UpstreamError(`our-free-model: upstream GET failed: ${error?.message ?? error}${transportCause(error)}`, CODE.transport)
+    if (error?.name === 'AbortError') throw new UpstreamError('our-free-model-fork: upstream GET timed out', CODE.timeout)
+    throw new UpstreamError(`our-free-model-fork: upstream GET failed: ${error?.message ?? error}${transportCause(error)}`, CODE.transport)
   } finally {
     clearTimeout(timer)
     signal?.removeEventListener?.('abort', onCallerAbort)

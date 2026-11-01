@@ -149,11 +149,11 @@ export function selfReload(ctx, options = {}) {
 
     const internal = loader.internal
     const backup = purgeCaches(internal, packageUrl)
-    logger.info?.(`our-free-model: hot reload purging ${backup.esm.size} cached module(s)`)
+    logger.info?.(`our-free-model-fork: hot reload purging ${backup.esm.size} cached module(s)`)
     if (backup.esm.size === 0 && internal?.loadCache instanceof Map) {
       // Diagnostic for kernels whose loadCache keys use a different shape.
       const sample = [...internal.loadCache.keys()].slice(0, 6).map(key => String(key).slice(-70))
-      globalThis[Symbol.for('our-free-model.purge-sample')] = { packageUrl: packageUrl.slice(-70), sample }
+      globalThis[Symbol.for('our-free-model-fork.purge-sample')] = { packageUrl: packageUrl.slice(-70), sample }
     }
 
     const importFresh = async url => loader.unwrapExports(await loader.import(url, () => []))
@@ -181,7 +181,7 @@ export function selfReload(ctx, options = {}) {
       restoreCaches(internal, backup)
       return { ok: false, error: `re-import failed, old code still running (${error?.message ?? error})`, restored: true }
     }
-    globalThis[Symbol.for('our-free-model.last-reload')] = { at: Date.now(), purged: backup.esm.size, busted }
+    globalThis[Symbol.for('our-free-model-fork.last-reload')] = { at: Date.now(), purged: backup.esm.size, busted }
 
     try {
       registry.delete(previous)
@@ -189,7 +189,7 @@ export function selfReload(ctx, options = {}) {
     } catch (error) {
       // Old fibers are gone regardless; the new registration below is still the
       // right move — the error is logged, not propagated, to not skip it.
-      logger.warn?.(`our-free-model: hot reload dispose reported ${error?.message ?? error}`)
+      logger.warn?.(`our-free-model-fork: hot reload dispose reported ${error?.message ?? error}`)
     }
 
     try {
@@ -204,7 +204,7 @@ export function selfReload(ctx, options = {}) {
         created.push(fresh)
       }
       await Promise.all(created.map(fiber => fiber.await()))
-      logger.info?.(`our-free-model: hot reload complete, ${created.length} fiber(s) re-registered`)
+      logger.info?.(`our-free-model-fork: hot reload complete, ${created.length} fiber(s) re-registered`)
       return { ok: true, version: String(replacement.version ?? ''), fibers: created.length }
     } catch (error) {
       // The replacement failed to start. Put the old code back both on disk
@@ -254,7 +254,7 @@ export function watchPackage(packageDir, { onChange, logger = console, debounceM
   try {
     watcher = fs.watch(packageDir, { recursive: true })
   } catch (error) {
-    logger.warn?.(`our-free-model: could not watch ${packageDir} (${error?.message ?? error})`)
+    logger.warn?.(`our-free-model-fork: could not watch ${packageDir} (${error?.message ?? error})`)
     return () => {}
   }
   const schedule = () => {
@@ -268,7 +268,7 @@ export function watchPackage(packageDir, { onChange, logger = console, debounceM
     timer.unref?.()
   }
   watcher.on('change', schedule)
-  watcher.on('error', error => logger.warn?.(`our-free-model: watcher error (${error?.message ?? error})`))
+  watcher.on('error', error => logger.warn?.(`our-free-model-fork: watcher error (${error?.message ?? error})`))
   return () => {
     paused = true
     clearTimeout(timer)

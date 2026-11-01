@@ -122,7 +122,7 @@ export class JsonStore {
       this.dirty = true
       if (!this.writeFailed) {
         this.writeFailed = true
-        this.log?.(`our-free-model: could not persist ${path.basename(this.file)} (${error?.message ?? error}); changes are kept in memory only`)
+        this.log?.(`our-free-model-fork: could not persist ${path.basename(this.file)} (${error?.message ?? error}); changes are kept in memory only`)
       }
     }
   }

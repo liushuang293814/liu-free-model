@@ -8,8 +8,8 @@
  *
  * Two routes are published from one adapter instance, because the harness groups
  * the model picker strictly by provider route and offers no other grouping
- * field: `our-free-model` carries what this egress can use right now, and
- * `our-free-model-region` carries what the gateway refuses on this egress. A
+ * field: `our-free-model-fork` carries what this egress can use right now, and
+ * `our-free-model-fork-region` carries what the gateway refuses on this egress. A
  * group with no models is dropped from the picker by the client, so a user whose
  * VPN unlocks the region-gated models sees one group, and a user without sees
  * the second group labelled as such.
@@ -33,13 +33,13 @@ import { applyTokenSavers, saverConfig } from './token-saver/index.js'
 import { classifyFailure, describeVerdict, shouldAdvance } from './route/classify.js'
 import { PIXEL_IMAGE_PRICING } from './image-pricing.js'
 
-export const ROUTE_MAIN = 'our-free-model'
-export const ROUTE_REGION = 'our-free-model-region'
+export const ROUTE_MAIN = 'our-free-model-fork'
+export const ROUTE_REGION = 'our-free-model-fork-region'
 
 /** Group headings — the only strings the picker shows as a section title. */
 export const ROUTE_LABELS = {
-  [ROUTE_MAIN]: 'Our Free Model',
-  [ROUTE_REGION]: 'Our Free Model · region-limited',
+  [ROUTE_MAIN]: 'Our Free Model (fork)',
+  [ROUTE_REGION]: 'Our Free Model (fork) · region-limited',
 }
 
 const STYLE_FOR_WIRE = { chat: 'chat', responses: 'flat', messages: 'claude' }
@@ -274,7 +274,7 @@ export class FreeModelAdapter {
       }
       const reason = result.verdict === null || result.verdict === undefined ? 'failed' : describeVerdict(result.verdict)
       tried.push(`${candidate.id} (${reason})`)
-      this.deps.warn?.(`our-free-model: chain "${entry.name}" advanced past ${candidate.id} — ${reason}`)
+      this.deps.warn?.(`our-free-model-fork: chain "${entry.name}" advanced past ${candidate.id} — ${reason}`)
     }
     rejectedTurn(candidates.length)
     yield { type: 'finish', reason: { kind: 'error', failure: {
@@ -558,10 +558,10 @@ export class FreeModelAdapter {
             && checkpointFits(payloadFor(nextMessages, continuationBudget, true, []), entry, maxTokensCut ? outcome.answerText : outcome.reasoningText, continuationBudget)) {
             record(false, outcome, { truncated: true, recoveryScheduled: true })
             this.deps.warn?.(maxTokensCut
-              ? 'our-free-model: the answer hit the output token ceiling; continuing once from where it stopped'
+              ? 'our-free-model-fork: the answer hit the output token ceiling; continuing once from where it stopped'
               : silentStop
-                ? 'our-free-model: a stopped turn held only its reasoning; continuing once from its checkpoint'
-                : 'our-free-model: interrupted reasoning; continuing once from its checkpoint')
+                ? 'our-free-model-fork: a stopped turn held only its reasoning; continuing once from its checkpoint'
+                : 'our-free-model-fork: interrupted reasoning; continuing once from its checkpoint')
             attemptMessages = nextMessages
             attemptBudget = continuationBudget
             continuationScheduled = true
@@ -598,7 +598,7 @@ export class FreeModelAdapter {
         finishTurn(true, recovering && reason.kind === 'stop', attempt + 1)
         yield { type: 'usage', usage: totalUsage }
         yield { type: 'finish', reason }
-        if (warnings.length > 0) this.deps.warn?.(`our-free-model: dropped unsupported content for ${entry.id}: ${warnings.join(', ')}`)
+        if (warnings.length > 0) this.deps.warn?.(`our-free-model-fork: dropped unsupported content for ${entry.id}: ${warnings.join(', ')}`)
         return { advance: false, verdict: null, ok: true, recovered: recovering && reason.kind === 'stop' }
       } catch (error) {
         if (error?.code === CODE.region) this.deps.onRegionBlocked?.(entry.id)

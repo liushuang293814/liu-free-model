@@ -48,7 +48,7 @@ const PING_PROMPT = 'ping'
  */
 export async function probeModel(model, { attributionUserAgent, signal, timeoutMs = 45000 } = {}) {
   const started = Date.now()
-  const session = sessionForConversation('probe:our-free-model')
+  const session = sessionForConversation('probe:our-free-model-fork')
   const wire = wireFor(model.id)
   const body = buildPing(model.id, wire)
   applyFingerprint(body, wire === 'responses')

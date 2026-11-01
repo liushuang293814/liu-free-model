@@ -15,8 +15,8 @@ buddy（CodeBuddy 国内版）和 workbuddy（国际版）会检查 `system` 消
 
 需要 DSH 桌面端（DeepSeek Harness）。
 
-> **装之前先卸载官方的 `dsh-our-free-model`。** 两个包共用同一个内部 id（`our-free-model`），
-> 同时存在会导致其中一个不加载。在插件面板里卸载即可。
+> **建议先卸载官方的 `dsh-our-free-model`。** 两者命名空间已经完全隔离（包名、插件 id、
+> LLM 路由、API 前缀、数据目录都不同），可以共存；但同时装会在模型列表里出现两份重复模型。
 
 **1. 克隆**
 

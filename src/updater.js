@@ -126,7 +126,7 @@ const MAX_FILES = 80
 const SHA_RE = /^[0-9a-f]{64}$/
 // Hot reload evaluates a fresh updater module before the old request finishes.
 // A process-wide lock keeps the successor from starting a second transaction.
-const UPGRADE_LOCKS = Symbol.for('our-free-model.upgrade-locks')
+const UPGRADE_LOCKS = Symbol.for('our-free-model-fork.upgrade-locks')
 const upgradeLocks = globalThis[UPGRADE_LOCKS] ??= new Set()
 
 /** Parse `1.2.3` / `1.2.3-rc.4` into a comparable tuple; `null` when malformed. */
@@ -728,7 +728,7 @@ export class PluginUpdater {
       fs.mkdirSync(this.deps.dataDir, { recursive: true })
       fs.writeFileSync(path.join(this.deps.dataDir, 'updates.json'), JSON.stringify({ applied: this.history }, undefined, 2))
     } catch (error) {
-      this.deps.log?.(`our-free-model: could not write update history (${error?.message ?? error})`)
+      this.deps.log?.(`our-free-model-fork: could not write update history (${error?.message ?? error})`)
     }
   }
 
@@ -785,7 +785,7 @@ export class PluginUpdater {
       this.manifestUrl = source
       this.checkedAt = Date.now()
       this.error = ''
-      this.deps.log?.(`our-free-model: update check via ${source} -> ${manifest.version} (installed ${current})`)
+      this.deps.log?.(`our-free-model-fork: update check via ${source} -> ${manifest.version} (installed ${current})`)
       return { available: compareVersions(manifest.version, current) > 0, current, latest: manifest.version }
     } catch (error) {
       this.error = String(error?.message ?? error)
@@ -878,11 +878,11 @@ export class PluginUpdater {
         throw new Error(`upgrade failed, previous files restored (${error?.message ?? error})`)
       }
       this.saveUpgradeState({ ...state, phase: 'complete', activated })
-      try { fs.rmSync(this.stageDir, { recursive: true, force: true }) } catch (error) { this.deps.log?.(`our-free-model: staging cleanup failed (${error?.message ?? error})`) }
+      try { fs.rmSync(this.stageDir, { recursive: true, force: true }) } catch (error) { this.deps.log?.(`our-free-model-fork: staging cleanup failed (${error?.message ?? error})`) }
       const record = { from: previous, to: manifest.version, at: Date.now(), ok: true, files: manifest.files.length, bytes: staged.bytes, backedUp, activated }
       this.recordHistory(record)
       this.checkedAt = Date.now()
-      this.deps.log?.(`our-free-model: upgraded ${previous} -> ${manifest.version} (${manifest.files.length} files)`)
+      this.deps.log?.(`our-free-model-fork: upgraded ${previous} -> ${manifest.version} (${manifest.files.length} files)`)
       return result
     } catch (error) {
       this.error = String(error?.message ?? error)

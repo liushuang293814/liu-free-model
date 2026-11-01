@@ -219,7 +219,7 @@ export class AnnouncementFeed {  /**
     const acceptable = parsed !== null && parsed.username === '' && parsed.password === ''
       && (parsed.protocol === 'https:' || (parsed.protocol === 'http:' && loopback))
     if (!acceptable) {
-      this.deps.log?.('our-free-model: ignoring feedUrl override — it must be an https URL (loopback http is allowed) without credentials')
+      this.deps.log?.('our-free-model-fork: ignoring feedUrl override — it must be an https URL (loopback http is allowed) without credentials')
       return defaults
     }
     return [expanded, ...defaults]
@@ -243,13 +243,13 @@ export class AnnouncementFeed {  /**
         const arrived = hadCache && this.deps.onArrival !== undefined
           ? feed.announcements.filter(item => !previousIds.has(item.id))
           : []
-        for (const item of arrived) this.deps.log?.(`our-free-model: announcement arrived "${item.title}"`)
+        for (const item of arrived) this.deps.log?.(`our-free-model-fork: announcement arrived "${item.title}"`)
         if (arrived.length > 0) this.deps.onArrival?.(arrived)
         this.persist()
         return { arrived, total: feed.announcements.length, source }
       } catch (error) {
         this.error = String(error?.message ?? error)
-        this.deps.log?.(`our-free-model: feed poll failed (${this.error})`)
+        this.deps.log?.(`our-free-model-fork: feed poll failed (${this.error})`)
         return { arrived: [], total: this.cache.announcements.length, source: this.cache.source }
       } finally {
         this.polling = null
@@ -266,7 +266,7 @@ export class AnnouncementFeed {  /**
       fs.writeFileSync(temp, JSON.stringify({ fetchedAt: this.cache.at, source: this.cache.source, announcements: this.cache.announcements }))
       fs.renameSync(temp, this.deps.cacheFile)
     } catch (error) {
-      this.deps.log?.(`our-free-model: could not persist the feed cache (${error?.message ?? error})`)
+      this.deps.log?.(`our-free-model-fork: could not persist the feed cache (${error?.message ?? error})`)
     }
   }
 

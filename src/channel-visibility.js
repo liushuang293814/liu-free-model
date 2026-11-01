@@ -75,7 +75,7 @@ export function installChannelCatalogVisibility(pool, { shouldHide } = {}) {
   }
 
   // 只包裹一次：热重载会重新 apply，重复包裹会层层叠加。
-  if (pool[Symbol.for('our-free-model.catalog-visibility')] !== true) {
+  if (pool[Symbol.for('our-free-model-fork.catalog-visibility')] !== true) {
     try {
       pool.hasLoggedInAccount = async function hasLoggedInAccount(provider) {
         // 现读开关：适配器构造时捕获的是账号池对象，开关变化无需重装。
@@ -86,7 +86,7 @@ export function installChannelCatalogVisibility(pool, { shouldHide } = {}) {
         }
         return await original.call(this, provider)
       }
-      Object.defineProperty(pool, Symbol.for('our-free-model.catalog-visibility'), {
+      Object.defineProperty(pool, Symbol.for('our-free-model-fork.catalog-visibility'), {
         value: true, enumerable: false, configurable: true,
       })
     } catch {
