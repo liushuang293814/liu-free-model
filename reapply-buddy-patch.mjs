@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 /**
- * reapply-buddy-patch.mjs — 给 dsh-our-free-model 重打 11128 补丁
+ * reapply-buddy-patch.mjs — 给 liu-free-model 重打 11128 补丁
  *
- * 为什么需要：插件目录是 pnpm 管理的。只要在 DSH 里安装/更新/卸载任何插件，
- * pnpm 就会重装整棵依赖树，vendor/channel-pack/pack.js 被 registry 上的原版
- * 覆盖，补丁全丢，11128 立刻复发。
+ * 为什么需要：插件用 git/registry 方式装在 node_modules 时，只要在 DSH 里
+ * 安装/更新/卸载任何插件，pnpm 就会重装整棵依赖树，vendor/channel-pack/pack.js
+ * 被上游原版覆盖，补丁全丢，11128 立刻复发。
+ * （用 link: 本地目录方式挂载时不受影响，本脚本只作兜底。）
  *
  * 用法：
  *   node reapply-buddy-patch.mjs           # 检查，未打则打
@@ -24,7 +25,7 @@ const DRY = args.includes('--dry')
 
 const PACK = process.env.OFM_PACK || path.join(
   os.homedir(), '.dsh', 'profiles', 'desktop', 'node_modules',
-  'dsh-our-free-model', 'vendor', 'channel-pack', 'pack.js'
+  'liu-free-model', 'vendor', 'channel-pack', 'pack.js'
 )
 
 if (!fs.existsSync(PACK)) {
