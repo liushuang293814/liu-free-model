@@ -72,7 +72,7 @@ export function createPushHub({ logger = console, heartbeatMs = HEARTBEAT_MS } =
         res.write(`event: ${event}\ndata: ${JSON.stringify(data ?? {})}\n\n`)
       } catch (error) {
         clients.delete(res)
-        logger.debug?.(`our-free-model-fork push: dropped client (${error?.message ?? error})`)
+        logger.debug?.(`liu-free-model push: dropped client (${error?.message ?? error})`)
       }
     },
     /** Broadcast one event to every attached surface. */

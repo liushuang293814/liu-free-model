@@ -15,7 +15,7 @@ export function publicModelRows(snapshot) {
     .filter(entry => membership.has(entry.id))
     .map(entry => ({
       id: entry.id, object: 'model',
-      created: Math.floor(Date.now() / 1000), owned_by: 'our-free-model-fork',
+      created: Math.floor(Date.now() / 1000), owned_by: 'liu-free-model',
       ...entry.contextWindow === undefined ? {} : { context_window: entry.contextWindow },
     }))
 }

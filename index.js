@@ -62,7 +62,7 @@ export { fromOpenAiMessages } from './src/core/completion.js'
 import { buildStats } from './src/core/stats.js'
 export { buildStats }
 
-export const name = 'our-free-model-fork'
+export const name = 'liu-free-model'
 
 /** The installed package directory — the self-updater and hot reload operate here. */
 const PKG_URL = new URL('./', import.meta.url)
@@ -164,8 +164,8 @@ export function apply(ctx, config) {
   // on globalThis so the new instance knows it replaced a predecessor, and does
   // the post-swap bookkeeping itself (the old closure must not touch stores
   // after its own dispose — that would race the new instance's writes).
-  const generation = (globalThis[Symbol.for('our-free-model-fork.generation')] ?? 0) + 1
-  globalThis[Symbol.for('our-free-model-fork.generation')] = generation
+  const generation = (globalThis[Symbol.for('liu-free-model.generation')] ?? 0) + 1
+  globalThis[Symbol.for('liu-free-model.generation')] = generation
 
   const stores = createRuntimeStores({ dataDir, logger })
   const { settings, stats, availability } = stores
@@ -409,7 +409,7 @@ export function apply(ctx, config) {
   // The successor offers a notification callback, but only the caller that
   // confirmed selfReload() and committed the outcome may invoke it. Booting a
   // replacement is not yet evidence that every fiber started successfully.
-  const pendingUpgrade = globalThis[Symbol.for('our-free-model-fork.pending-upgrade')]
+  const pendingUpgrade = globalThis[Symbol.for('liu-free-model.pending-upgrade')]
   if (pendingUpgrade?.version === packageVersion) {
     pendingUpgrade.notify = () => {
       if (disposed) return
@@ -425,7 +425,7 @@ export function apply(ctx, config) {
     attributionUserAgent: 'deepseek-harness',
     resolveImage: imageResolver(ctx, logger),
     sealedCredential: sealedCredentialOf,
-    onSealedUnavailable: () => logger.warn?.('our-free-model-fork: the sealed lane is not available in this composition (no recognized host profile); its models stay hidden'),
+    onSealedUnavailable: () => logger.warn?.('liu-free-model: the sealed lane is not available in this composition (no recognized host profile); its models stay hidden'),
     onTopology: () => emitTopology(),
   })
   const { state, adapter, refreshCatalog, refreshAvailability, watchEgress, fetchListing, publicModelRows, syncAggregateCatalog } = modelRuntime
@@ -488,7 +488,7 @@ export function apply(ctx, config) {
       }
     }
     logger.warn?.(
-      `our-free-model-fork: egress changed but the new exit never answered; leaving verdicts alone`
+      `liu-free-model: egress changed but the new exit never answered; leaving verdicts alone`
       + (lastError ? ` (${lastError?.message ?? lastError})` : ''),
     )
   }
@@ -533,7 +533,7 @@ export function apply(ctx, config) {
     // routable bind would spend this machine's free lane on the whole subnet.
     if (!isLoopbackHost(desired.host || '127.0.0.1')) {
       forwardError = 'the forward listener binds a loopback address only'
-      logger.warn?.(`our-free-model-fork: forward listener not started (${forwardError})`)
+      logger.warn?.(`liu-free-model: forward listener not started (${forwardError})`)
       return
     }
     try {
@@ -548,8 +548,8 @@ export function apply(ctx, config) {
         // while the listener is up, and a captured snapshot would keep answering
         // a disabled optimization until the next restart.
         optimize: () => optimizeConfig(settings.get().localOptimize),
-        log: message => logger.warn?.(`our-free-model-fork forward: ${message}`),
-        onTrace: event => logger.info?.(`our-free-model-fork request: ${JSON.stringify(event)}`),
+        log: message => logger.warn?.(`liu-free-model forward: ${message}`),
+        onTrace: event => logger.info?.(`liu-free-model request: ${JSON.stringify(event)}`),
       })
       forwardError = ''
       // The requested port is somebody else's for good — a `netsh interface
@@ -560,7 +560,7 @@ export function apply(ctx, config) {
       forwardNotice = forward.fellBack === true && forward.bindError !== null
         ? `port ${forward.requestedPort} is not available on this machine (${forward.bindError.code}); the listener is on port ${forward.port} instead`
         : ''
-      if (forwardNotice !== '') logger.warn?.(`our-free-model-fork forward: ${forwardNotice}`)
+      if (forwardNotice !== '') logger.warn?.(`liu-free-model forward: ${forwardNotice}`)
       // Persist the port that actually answers, but out of the CURRENT
       // settings - not the desired snapshot from before the await. An
       // overlapped save would otherwise be rolled back to entry-time values.
@@ -569,7 +569,7 @@ export function apply(ctx, config) {
       settings.flush()
     } catch (error) {
       forwardError = String(error?.message ?? error)
-      logger.warn?.(`our-free-model-fork: forward listener could not start (${forwardError})`)
+      logger.warn?.(`liu-free-model: forward listener could not start (${forwardError})`)
     }
   }
 
@@ -648,7 +648,7 @@ export function apply(ctx, config) {
     }
     if (port !== 0 && port === forward.port) {
       relayError = 'the LAN relay needs a port of its own'
-      logger.warn?.(`our-free-model-fork: LAN relay not started (${relayError})`)
+      logger.warn?.(`liu-free-model: LAN relay not started (${relayError})`)
       return
     }
     try {
@@ -665,8 +665,8 @@ export function apply(ctx, config) {
             targetPort: forward?.port ?? 0,
           }
         },
-        log: message => logger.warn?.(`our-free-model-fork lan relay: ${message}`),
-        onTrace: event => logger.info?.(`our-free-model-fork request: ${JSON.stringify(event)}`),
+        log: message => logger.warn?.(`liu-free-model lan relay: ${message}`),
+        onTrace: event => logger.info?.(`liu-free-model request: ${JSON.stringify(event)}`),
       })
       relayError = ''
       // The port that was actually bound goes back into the settings, so the
@@ -678,7 +678,7 @@ export function apply(ctx, config) {
       settings.flush()
     } catch (error) {
       relayError = String(error?.message ?? error)
-      logger.warn?.(`our-free-model-fork: LAN relay could not start (${relayError})`)
+      logger.warn?.(`liu-free-model: LAN relay could not start (${relayError})`)
     }
   }
 
@@ -741,7 +741,7 @@ export function apply(ctx, config) {
     if (!wanted) { chanRelayError = ''; return }
     if (port !== 0 && target.port === port) {
       chanRelayError = 'the relay needs a port of its own (the gateway listens on ' + target.port + ')'
-      logger.warn?.(`our-free-model-fork: channel gateway relay not started (${chanRelayError})`)
+      logger.warn?.(`liu-free-model: channel gateway relay not started (${chanRelayError})`)
       return
     }
     try {
@@ -759,7 +759,7 @@ export function apply(ctx, config) {
             gatewayKey: targetNow.credential?.key ?? '',
           }
         },
-        log: message => logger.warn?.(`our-free-model-fork channel relay: ${message}`),
+        log: message => logger.warn?.(`liu-free-model channel relay: ${message}`),
       })
       chanRelayError = ''
       // The bound port goes back into the settings, so the page shows the
@@ -769,7 +769,7 @@ export function apply(ctx, config) {
       settings.flush()
     } catch (error) {
       chanRelayError = String(error?.message ?? error)
-      logger.warn?.(`our-free-model-fork: channel gateway relay could not start (${chanRelayError})`)
+      logger.warn?.(`liu-free-model: channel gateway relay could not start (${chanRelayError})`)
     }
   }
 
@@ -818,7 +818,7 @@ export function apply(ctx, config) {
     const run = fetchListing()
       .then(() => {})
       .catch(error => {
-        logger.debug?.(`our-free-model-fork: gateway latency reading failed (${error?.message ?? error})`)
+        logger.debug?.(`liu-free-model: gateway latency reading failed (${error?.message ?? error})`)
       })
     latencyMeasureInFlight = run
     try { await run } finally { if (latencyMeasureInFlight === run) latencyMeasureInFlight = null }
@@ -880,7 +880,7 @@ export function apply(ctx, config) {
     }
     if (url === '') {
       outletError = 'the outlet needs a subscription or proxy URL'
-      logger.warn?.(`our-free-model-fork: egress outlet not started (${outletError})`)
+      logger.warn?.(`liu-free-model: egress outlet not started (${outletError})`)
       return
     }
     try {
@@ -894,20 +894,20 @@ export function apply(ctx, config) {
           }
         },
         dataDir,
-        log: message => logger.info?.(`our-free-model-fork egress: ${message}`),
+        log: message => logger.info?.(`liu-free-model egress: ${message}`),
         onDead: scheduleOutletRestart,
       })
       outletFingerprint = fingerprint
       outletError = ''
       outletUpSince = Date.now()
-      logger.info?.(`our-free-model-fork: egress outlet up (${outletLabel(url)} via ${mode})`)
+      logger.info?.(`liu-free-model: egress outlet up (${outletLabel(url)} via ${mode})`)
       // Same as the close path: the exit IP, its country and the region-gated
       // verdicts all moved with the outlet, so settle them now instead of at the
       // next periodic watch.
       void settleOutletWatch()
     } catch (error) {
       outletError = String(error?.message ?? error)
-      logger.warn?.(`our-free-model-fork: egress outlet could not start (${outletError})`)
+      logger.warn?.(`liu-free-model: egress outlet could not start (${outletError})`)
     }
   }
 
@@ -926,7 +926,7 @@ export function apply(ctx, config) {
     if (Date.now() - outletUpSince >= OUTLET_STABLE_MS) outletRestartAttempts = 0
     const delay = Math.min(15_000 * 2 ** outletRestartAttempts, 600_000)
     outletRestartAttempts += 1
-    logger.warn?.(`our-free-model-fork: egress outlet went down; restarting in ${Math.round(delay / 1000)}s (attempt ${outletRestartAttempts})`)
+    logger.warn?.(`liu-free-model: egress outlet went down; restarting in ${Math.round(delay / 1000)}s (attempt ${outletRestartAttempts})`)
     outletRestartTimer = setTimeout(() => {
       outletRestartTimer = null
       void syncEgress().catch(() => {})
@@ -952,7 +952,7 @@ export function apply(ctx, config) {
   async function applyUpgrade(version) {
     if (managed) throw httpError(409, MANAGED_MESSAGE)
     if (isReloading()) throw new Error('a reload is already in progress')
-    const pendingKey = Symbol.for('our-free-model-fork.pending-upgrade')
+    const pendingKey = Symbol.for('liu-free-model.pending-upgrade')
     let pending
     try {
       const result = await updater.apply({
@@ -965,7 +965,7 @@ export function apply(ctx, config) {
       })
       // Notification uses the successor's stores and hub. The predecessor's
       // effects have already been disposed by the swap.
-      try { pending?.notify?.() } catch (error) { logger.warn?.(`our-free-model-fork: upgrade notification failed (${error?.message ?? error})`) }
+      try { pending?.notify?.() } catch (error) { logger.warn?.(`liu-free-model: upgrade notification failed (${error?.message ?? error})`) }
       return { ...result, reloaded: true }
     } finally {
       if (globalThis[pendingKey] === pending) globalThis[pendingKey] = undefined
@@ -985,8 +985,8 @@ export function apply(ctx, config) {
         onChange: () => {
           const status = updater.status()
           if (isReloading() || status.applying || status.recoveryRequired) return
-          logger.info?.('our-free-model-fork: watched files changed; hot-reloading')
-          void reloadFromDisk().catch(error => logger.warn?.(`our-free-model-fork: hot reload failed (${error?.message ?? error})`))
+          logger.info?.('liu-free-model: watched files changed; hot-reloading')
+          void reloadFromDisk().catch(error => logger.warn?.(`liu-free-model: hot reload failed (${error?.message ?? error})`))
         },
       })
     } else if (!wanted && watcher !== undefined) {
@@ -1047,7 +1047,7 @@ export function apply(ctx, config) {
   let channelVisibility = { installed: false, sync() {} }
   ctx.inject(['credentials', 'commands', 'llm'], scoped => {
     let stopped = false
-    scoped.effect(() => () => { stopped = true }, 'our-free-model-fork: channel pack')
+    scoped.effect(() => () => { stopped = true }, 'liu-free-model: channel pack')
     // Dynamic import: the pack's own imports (the kernel's llm and credential
     // modules) are host-provided, and a composition that lacks them must still
     // load this plugin's free lane. `pack.js` is the bundled form of the
@@ -1069,18 +1069,18 @@ export function apply(ctx, config) {
         shouldHide: () => settings.get().hideChannelModels === true,
       })
       channelPack = { state: 'ready', error: '' }
-      logger.info?.(`our-free-model-fork: free-channel pack mounted (CodeArts, CodeBuddy, and 11 more)${channelVisibility.installed ? ', catalog visibility switch armed' : ''}`)
+      logger.info?.(`liu-free-model: free-channel pack mounted (CodeArts, CodeBuddy, and 11 more)${channelVisibility.installed ? ', catalog visibility switch armed' : ''}`)
     }).catch(error => {
       if (stopped) return
       channelPack = { state: 'failed', error: String(error?.message ?? error).slice(0, 300) }
-      logger.warn?.(`our-free-model-fork: free-channel pack unavailable (${channelPack.error})`)
+      logger.warn?.(`liu-free-model: free-channel pack unavailable (${channelPack.error})`)
     })
   })
 
   const logAdmissionRejection = surface => ({ status, source, reason }) => {
     // Fixed fields only: headers, request URLs and admission errors may contain
     // credentials. JSON API and SSE must report the same admission boundary.
-    logger.warn?.(`our-free-model-fork: ${surface} admission rejected status=${status} source=${source} reason=${reason}`)
+    logger.warn?.(`liu-free-model: ${surface} admission rejected status=${status} source=${source} reason=${reason}`)
   }
   const api = createApiRoutes({
     settings, stats, availability, catalog: () => modelRuntime.catalog, state,
@@ -1372,8 +1372,8 @@ export function apply(ctx, config) {
       reloadCount: settings.get().reloadCount ?? 0,
       dataDir,
       autoReloadWatch: settings.get().autoReloadWatch === true,
-      lastReload: globalThis[Symbol.for('our-free-model-fork.last-reload')] ?? undefined,
-      purgeSample: globalThis[Symbol.for('our-free-model-fork.purge-sample')] ?? undefined,
+      lastReload: globalThis[Symbol.for('liu-free-model.last-reload')] ?? undefined,
+      purgeSample: globalThis[Symbol.for('liu-free-model.purge-sample')] ?? undefined,
     }),
     announcements: {
       view: feedView,
@@ -1425,12 +1425,12 @@ export function apply(ctx, config) {
   // server was busy serving it.
   ctx.inject(['webServer'], scoped => {
     const server = scoped.webServer
-    scoped.effect(() => server.register({ kind: 'prefix', path: '/api/our-free-model-fork', handler: api }), 'our-free-model-fork: api routes')
+    scoped.effect(() => server.register({ kind: 'prefix', path: '/api/liu-free-model', handler: api }), 'liu-free-model: api routes')
     // The events stream is an exact route: exact dispatch outranks the prefix, so
     // the hub's handler owns the socket while every other path still lands on the
     // JSON API.
-    scoped.effect(() => server.register({ kind: 'exact', path: '/api/our-free-model-fork/events', handler: eventsRoute }), 'our-free-model-fork: events stream')
-    logger.info?.('our-free-model-fork: settings API mounted at /api/our-free-model-fork')
+    scoped.effect(() => server.register({ kind: 'exact', path: '/api/liu-free-model/events', handler: eventsRoute }), 'liu-free-model: events stream')
+    logger.info?.('liu-free-model: settings API mounted at /api/liu-free-model')
   })
 
   /** Adopt one request as a live push stream, after the trust fence. */
@@ -1457,16 +1457,16 @@ export function apply(ctx, config) {
   ctx.effect(() => () => {
     modelRuntime.dispose()
     stores.dispose()
-  }, 'our-free-model-fork: stores')
+  }, 'liu-free-model: stores')
 
   ctx.effect(() => () => {
     void forward?.close().catch(() => {})
     void relay?.close().catch(() => {})
     void chanRelay?.close().catch(() => {})
     void outletRelay?.close().catch(() => {})
-  }, 'our-free-model-fork: forward listener')
+  }, 'liu-free-model: forward listener')
 
-  ctx.effect(() => () => { registration() }, 'our-free-model-fork: adapter routes')
+  ctx.effect(() => () => { registration() }, 'liu-free-model: adapter routes')
 
   ctx.effect(() => () => {
     disposed = true
@@ -1477,7 +1477,7 @@ export function apply(ctx, config) {
     modelRuntime.dispose()
     push.dispose()
     watcher?.()
-  }, 'our-free-model-fork: push + watcher')
+  }, 'liu-free-model: push + watcher')
 
   ctx.effect(() => {
     void (async () => {
@@ -1508,14 +1508,14 @@ export function apply(ctx, config) {
       try {
         await refreshCatalog({ probe: true, force: true })
       } catch (error) {
-        logger.warn?.(`our-free-model-fork: startup refresh failed (${error?.message ?? error})`)
+        logger.warn?.(`liu-free-model: startup refresh failed (${error?.message ?? error})`)
       }
       if (disposed) return
       syncWatcher()
       emitTopology()
       push.emit('hello', helloPayload())
-    })().catch(error => logger.warn?.(`our-free-model-fork: startup refresh failed (${error?.message ?? error})`))
-  }, 'our-free-model-fork: boot refresh')
+    })().catch(error => logger.warn?.(`liu-free-model: startup refresh failed (${error?.message ?? error})`))
+  }, 'liu-free-model: boot refresh')
 
   // Feed poll: shortly after boot, then on the configured period. Concurrency
   // with a manual refresh is harmless — polls share one in-flight request.
@@ -1525,7 +1525,7 @@ export function apply(ctx, config) {
     const first = setTimeout(() => { void feed.poll() }, 12_000)
     first.unref?.()
     return () => clearTimeout(first)
-  }, 'our-free-model-fork: first feed poll')
+  }, 'liu-free-model: first feed poll')
 
   /**
    * Run one task every `ms` for as long as this generation lives.
@@ -1553,7 +1553,7 @@ export function apply(ctx, config) {
       handle.unref?.()
     }, period())
     handle.unref?.()
-    ctx.effect(() => () => clearTimeout(handle), 'our-free-model-fork: interval')
+    ctx.effect(() => () => clearTimeout(handle), 'liu-free-model: interval')
   }
 
   if (!managed) {
@@ -1571,7 +1571,7 @@ export function apply(ctx, config) {
     void (async () => {
       await watchEgress()
       await refreshCatalog({ probe: true })
-    })().catch(error => logger.warn?.(`our-free-model-fork: periodic refresh failed (${error?.message ?? error})`))
+    })().catch(error => logger.warn?.(`liu-free-model: periodic refresh failed (${error?.message ?? error})`))
   }, () => positiveOr(settings.get().probeIntervalMinutes, 15, 1) * 60_000)
   // A failing egress watch means the network is down, which is worth one line —
   // and only the first of a streak, or a dead link would write every two minutes
@@ -1586,7 +1586,7 @@ export function apply(ctx, config) {
         void readOutletStatus().catch(() => {})
       })
       .catch(error => {
-        if (!egressWarned) logger.warn?.(`our-free-model-fork: egress watch failed (${error?.message ?? error})`)
+        if (!egressWarned) logger.warn?.(`liu-free-model: egress watch failed (${error?.message ?? error})`)
         egressWarned = true
       })
   }, 120_000)
@@ -1602,7 +1602,7 @@ export function apply(ctx, config) {
     }, 40_000)
     first.unref?.()
     return () => clearTimeout(first)
-  }, 'our-free-model-fork: first update check')
+  }, 'liu-free-model: first update check')
 
   // Keep the module-level "notified" marker in sync with the stored one so a
   // reload does not re-toast the same version.
@@ -1695,14 +1695,14 @@ function imageResolver(ctx, logger) {
       const hostPath = attachments.imageHostPath(ref)
       if (typeof hostPath !== 'string' || hostPath === '') return undefined
       const size = fs.statSync(hostPath).size
-      if (size > MAX_IMAGE_BYTES) { logger.warn?.(`our-free-model-fork: image ${id} is ${size} bytes, above the ${MAX_IMAGE_BYTES} send limit`); return undefined }
+      if (size > MAX_IMAGE_BYTES) { logger.warn?.(`liu-free-model: image ${id} is ${size} bytes, above the ${MAX_IMAGE_BYTES} send limit`); return undefined }
       const media = typeof ref.mediaType === 'string' ? ref.mediaType : 'image/png'
       const url = `data:${media};base64,${fs.readFileSync(hostPath).toString('base64')}`
       if (cache.size > 48) cache.clear()
       cache.set(id, url)
       return url
     } catch (error) {
-      logger.warn?.(`our-free-model-fork: could not read image ${id} (${error?.message ?? error})`)
+      logger.warn?.(`liu-free-model: could not read image ${id} (${error?.message ?? error})`)
       return undefined
     }
   }
@@ -1723,7 +1723,7 @@ const POOL_REASONS = new Set(['no-lane', 'gateway-status', 'malformed', 'unreach
 function createApiRoutes(deps) {
   return async function handler(req, res) {
     const url = new URL(req.url ?? '/', 'http://localhost')
-    const routePath = url.pathname.replace(/^\/api\/our-free-model-fork/, '').replace(/\/+$/, '') || '/'
+    const routePath = url.pathname.replace(/^\/api\/liu-free-model/, '').replace(/\/+$/, '') || '/'
     const method = String(req.method ?? 'GET').toUpperCase()
     const rejection = rejectionFor(req, deps.connection, deps.onAdmissionRejection)
     const send = (status, payload) => {
@@ -1823,7 +1823,7 @@ function createApiRoutes(deps) {
       if (method === 'GET' && routePath === '/pool') {
         try { return send(200, await deps.pool()) } catch (error) {
           const reason = POOL_REASONS.has(error?.reason) ? error.reason : 'unreachable'
-          deps.logger?.warn?.(`our-free-model-fork: pool snapshot unavailable (${reason})`)
+          deps.logger?.warn?.(`liu-free-model: pool snapshot unavailable (${reason})`)
           return send(404, { error: `pool unavailable (${reason})` })
         }
       }
@@ -1889,7 +1889,7 @@ function createApiRoutes(deps) {
         setTimeout(() => {
           Promise.resolve()
             .then(() => deps.hotReload())
-            .catch(error => deps.logger?.warn?.(`our-free-model-fork: hot reload failed (${error?.message ?? error})`))
+            .catch(error => deps.logger?.warn?.(`liu-free-model: hot reload failed (${error?.message ?? error})`))
         }, 50).unref?.()
         return
       }

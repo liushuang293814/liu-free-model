@@ -84,14 +84,14 @@ export function mintRequestId(timestamp = Date.now()) {
 export function sessionForConversation(sessionId) {
   if (typeof sessionId === 'string' && SESSION_RE.test(sessionId.trim())) return sessionId.trim()
   const seed = typeof sessionId === 'string' && sessionId.trim() ? sessionId.trim() : 'global'
-  const digest = crypto.createHash('sha256').update(`our-free-model-fork\0${seed}`).digest()
+  const digest = crypto.createHash('sha256').update(`liu-free-model\0${seed}`).digest()
   return `ses_${digest.subarray(0, 6).toString('hex')}${base62From(digest.subarray(6, 20))}`
 }
 
 /** Stable per-turn request id: retries of the same turn share it. */
 export function requestIdFor(sessionId, turnSeed) {
   if (typeof turnSeed !== 'string' || turnSeed === '') return mintRequestId()
-  const digest = crypto.createHash('sha256').update(`our-free-model-fork-req\0${sessionId}\0${turnSeed}`).digest()
+  const digest = crypto.createHash('sha256').update(`liu-free-model-req\0${sessionId}\0${turnSeed}`).digest()
   const id = `msg_${digest.subarray(0, 6).toString('hex')}${base62From(digest.subarray(6, 20))}`
   return REQUEST_RE.test(id) ? id : mintRequestId()
 }

@@ -27,7 +27,7 @@ export function resolveDshHome() {
   return path.join(os.homedir(), '.dsh')
 }
 
-export const DATA_DIR_NAME = 'dsh-our-free-model-fork'
+export const DATA_DIR_NAME = 'liu-free-model'
 
 /** Bumped when the shape or the meaning of a stored field changes. */
 export const STATS_VERSION = 3
@@ -122,7 +122,7 @@ export class JsonStore {
       this.dirty = true
       if (!this.writeFailed) {
         this.writeFailed = true
-        this.log?.(`our-free-model-fork: could not persist ${path.basename(this.file)} (${error?.message ?? error}); changes are kept in memory only`)
+        this.log?.(`liu-free-model: could not persist ${path.basename(this.file)} (${error?.message ?? error}); changes are kept in memory only`)
       }
     }
   }

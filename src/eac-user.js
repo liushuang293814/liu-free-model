@@ -7,7 +7,7 @@
  * this file is what makes one install *this user* to the gateway's gate —
  * GitHub login plus a live star verdict, minted server-side and revocable
  * there. It lives beside the rest of the plugin's state under
- * `DSH_HOME/dsh-our-free-model-fork/`, 0600, written through a temp file + rename so a
+ * `DSH_HOME/liu-free-model/`, 0600, written through a temp file + rename so a
  * crash mid-write cannot leave a half-token.
  *
  * Nothing here ever reaches a log, an error message, or a catalog entry; the

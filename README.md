@@ -1,4 +1,4 @@
-# dsh-our-free-model-fork
+# liu-free-model
 
 界面里显示为 **liu-free-model**。DSH 插件 `dsh-our-free-model` 的二次开发版，修掉 buddy / workbuddy 渠道的 **11128 拦截**。
 
@@ -23,18 +23,18 @@ buddy（CodeBuddy 国内版）和 workbuddy（国际版）会检查 `system` 消
 DSH 里打开 **设置 → 插件 → 添加插件**，输入框直接粘贴仓库地址：
 
 ```
-https://github.com/liushuang293814/dsh-our-free-model-fork
+https://github.com/liushuang293814/liu-free-model
 ```
 
-也接受 `github:liushuang293814/dsh-our-free-model-fork`。DSH 会自己 git 拉取 + 装依赖，不用先 clone。
+也接受 `github:liushuang293814/liu-free-model`。DSH 会自己 git 拉取 + 装依赖，不用先 clone。
 
 想改成先 clone 再装本地目录（方便改 `src/`）也可以：
 
 ```bash
-git clone https://github.com/liushuang293814/dsh-our-free-model-fork.git
+git clone https://github.com/liushuang293814/liu-free-model.git
 ```
 
-然后在同一个入口填该目录的**绝对路径**，例如 `D:/plugins/dsh-our-free-model-fork`。
+然后在同一个入口填该目录的**绝对路径**，例如 `D:/plugins/liu-free-model`。
 
 **2. 重启 DSH**
 
@@ -43,7 +43,7 @@ git clone https://github.com/liushuang293814/dsh-our-free-model-fork.git
 **3. 验证（可选）**
 
 ```bash
-cd dsh-our-free-model-fork
+cd liu-free-model
 node verify.mjs
 ```
 
@@ -58,7 +58,7 @@ node verify.mjs
 
 - **不再跟随 npm 更新**，这是二次开发版的代价。插件自带的上游自更新已关闭（`distribution: managed`）。仓库有更新时，卸载后重新安装一次即可升级。
 - 用本地目录方式安装的，**别删或改名这个目录**，否则符号链接悬空、插件加载失败。
-- 配置和模型数据在 `~/.dsh/dsh-our-free-model-fork/`，与包名一致，卸载插件不会删除。
+- 配置和模型数据在 `~/.dsh/liu-free-model/`，与包名一致，卸载插件不会删除。
 - 可以直接改 `src/`：`index.js` 实际 import 了其中 29 个模块，都是运行时加载的。`vendor/channel-pack/pack.js` 同理。
 
 ## 许可证

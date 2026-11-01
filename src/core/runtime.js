@@ -127,7 +127,7 @@ export function createModelRuntime({
       reprobeTimer = setTimeout(() => {
         reprobeTimer = undefined
         if (!disposed) void refreshAvailability(true).catch(error => {
-          logger.warn?.(`our-free-model-fork: region reprobe failed (${error?.message ?? error})`)
+          logger.warn?.(`liu-free-model: region reprobe failed (${error?.message ?? error})`)
         })
       }, 4000)
       reprobeTimer.unref?.()
@@ -164,7 +164,7 @@ export function createModelRuntime({
     try {
       ids = parseListing(await fetchListing())
     } catch (error) {
-      if (!disposed) logger.warn?.(`our-free-model-fork: model listing refresh failed (${error?.message ?? error}); keeping the cached catalog`)
+      if (!disposed) logger.warn?.(`liu-free-model: model listing refresh failed (${error?.message ?? error}); keeping the cached catalog`)
     }
     if (disposed) return catalog
     if (ids.length > 0) {
@@ -207,10 +207,10 @@ export function createModelRuntime({
       if (error?.code === CODE.credential) {
         sealedCatalog = []
         catalogStore.update({ sealIds: [] })
-        logger.warn?.('our-free-model-fork: the sealed lane refused its credential; its models are hidden until it is accepted again')
+        logger.warn?.('liu-free-model: the sealed lane refused its credential; its models are hidden until it is accepted again')
         return
       }
-      logger.warn?.(`our-free-model-fork: sealed lane listing failed (${error?.code ?? 'unknown'}); keeping its cached roster`)
+      logger.warn?.(`liu-free-model: sealed lane listing failed (${error?.code ?? 'unknown'}); keeping its cached roster`)
     }
   }
 
@@ -231,7 +231,7 @@ export function createModelRuntime({
       kiloCatalog = buildKiloCatalog(payload.data)
       catalogStore.update({ kiloRows: kiloCatalog })
     } catch (error) {
-      if (!disposed) logger.warn?.(`our-free-model-fork: Kilo channel listing failed (${error?.code ?? error?.message ?? 'unknown'}); keeping its cached roster`)
+      if (!disposed) logger.warn?.(`liu-free-model: Kilo channel listing failed (${error?.code ?? error?.message ?? 'unknown'}); keeping its cached roster`)
     }
   }
 
@@ -239,7 +239,7 @@ export function createModelRuntime({
     if (disposed) return { data: [] }
     const started = Date.now()
     const listing = await getJson('/zen/v1/models', {
-      session: sessionForConversation('catalog:our-free-model-fork'),
+      session: sessionForConversation('catalog:liu-free-model'),
       requestId: mintRequestId(),
       attributionUserAgent,
       signal: lifetime.signal,
@@ -282,7 +282,7 @@ export function createModelRuntime({
     availability.flush()
     const verdicts = Object.values(results)
     if (verdicts.length > 0 && verdicts.every(row => row.state === STATE.unavailable)) {
-      logger.warn?.(`our-free-model-fork: the gateway refused all ${verdicts.length} models this round (${verdicts[0].detail ?? 'no detail'}); keeping them advertised`)
+      logger.warn?.(`liu-free-model: the gateway refused all ${verdicts.length} models this round (${verdicts[0].detail ?? 'no detail'}); keeping them advertised`)
     }
     const allThrottled = verdicts.length > 0 && verdicts.every(row => row.state === STATE.throttled)
     probeThrottleStreak = allThrottled ? probeThrottleStreak + 1 : 0
@@ -290,7 +290,7 @@ export function createModelRuntime({
       ? Date.now() + Math.min(30 * 2 ** (probeThrottleStreak - 1), 120) * 60_000
       : 0
     if (allThrottled) {
-      logger.warn?.(`our-free-model-fork: the probe round hit the lane's quota; availability probes pause for ${Math.round((probeBackoffUntil - Date.now()) / 60_000)} minutes (your own requests are unaffected, and the reprobe button forces a round)`)
+      logger.warn?.(`liu-free-model: the probe round hit the lane's quota; availability probes pause for ${Math.round((probeBackoffUntil - Date.now()) / 60_000)} minutes (your own requests are unaffected, and the reprobe button forces a round)`)
     }
     emitTopology()
     return results
@@ -314,7 +314,7 @@ export function createModelRuntime({
     if (changed) {
       availability.update({ egress: seen })
       availability.flush()
-      logger.info?.(`our-free-model-fork: egress changed to ${seen.ip}${seen.country ? ` (${seen.country})` : ''}; re-probing availability`)
+      logger.info?.(`liu-free-model: egress changed to ${seen.ip}${seen.country ? ` (${seen.country})` : ''}; re-probing availability`)
       await refreshAvailability(true)
     }
     return true
