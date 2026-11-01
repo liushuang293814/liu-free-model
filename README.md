@@ -1,6 +1,6 @@
 # dsh-our-free-model-fork
 
-DSH 插件 `dsh-our-free-model` 的二次开发版，修掉 buddy / workbuddy 渠道的 **11128 拦截**。
+界面里显示为 **liu-free-model**。DSH 插件 `dsh-our-free-model` 的二次开发版，修掉 buddy / workbuddy 渠道的 **11128 拦截**。
 
 > 非官方版本，与上游作者无关。基于 npm `dsh-our-free-model@2.1.0`（MIT）的发布产物修改。
 
@@ -18,27 +18,29 @@ buddy（CodeBuddy 国内版）和 workbuddy（国际版）会检查 `system` 消
 > **建议先卸载官方的 `dsh-our-free-model`。** 两者命名空间已经完全隔离（包名、插件 id、
 > LLM 路由、API 前缀、数据目录都不同），可以共存；但同时装会在模型列表里出现两份重复模型。
 
-**1. 克隆**
+**1. 安装**
+
+DSH 里打开 **设置 → 插件 → 添加插件**，输入框直接粘贴仓库地址：
+
+```
+https://github.com/liushuang293814/dsh-our-free-model-fork
+```
+
+也接受 `github:liushuang293814/dsh-our-free-model-fork`。DSH 会自己 git 拉取 + 装依赖，不用先 clone。
+
+想改成先 clone 再装本地目录（方便改 `src/`）也可以：
 
 ```bash
 git clone https://github.com/liushuang293814/dsh-our-free-model-fork.git
 ```
 
-**2. 添加插件**
+然后在同一个入口填该目录的**绝对路径**，例如 `D:/plugins/dsh-our-free-model-fork`。
 
-DSH 里打开 **设置 → 插件 → 添加插件**，填上面那个目录的**绝对路径**，例如：
-
-```
-D:/plugins/dsh-our-free-model-fork
-```
-
-装完自动完成依赖安装和启用。
-
-**3. 重启 DSH**
+**2. 重启 DSH**
 
 `pack.js` 是宿主侧模块，刷新网页无效，必须重启客户端。
 
-**4. 验证（可选）**
+**3. 验证（可选）**
 
 ```bash
 cd dsh-our-free-model-fork
@@ -54,8 +56,8 @@ node verify.mjs
 
 ## 注意
 
-- **不再跟随 npm 更新**，这是二次开发版的代价。插件自带的上游自更新已关闭（`distribution: managed`）。
-- 用 `link:` 方式安装的，**别删或改名这个目录**，否则符号链接悬空、插件加载失败。
+- **不再跟随 npm 更新**，这是二次开发版的代价。插件自带的上游自更新已关闭（`distribution: managed`）。仓库有更新时，卸载后重新安装一次即可升级。
+- 用本地目录方式安装的，**别删或改名这个目录**，否则符号链接悬空、插件加载失败。
 - 配置和模型数据在 `~/.dsh/dsh-our-free-model-fork/`，与包名一致，卸载插件不会删除。
 - 可以直接改 `src/`：`index.js` 实际 import 了其中 29 个模块，都是运行时加载的。`vendor/channel-pack/pack.js` 同理。
 
