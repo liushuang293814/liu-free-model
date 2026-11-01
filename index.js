@@ -1,5 +1,5 @@
 /**
- * Our Free Model — plugin entry (Host half).
+ * liu-free-model — plugin entry (Host half).
  *
  * Wiring: one adapter instance, two provider routes (usable now / region-limited
  * on this egress), a live-catalog + availability-probe loop behind them, the
@@ -2189,7 +2189,7 @@ function clientSnippets({ forward, key, lanKey, models }) {
         `model = "${sample}"`,
         '',
         '[model_providers.ofm]',
-        'name = "Our Free Model"',
+        'name = "liu-free-model"',
         `base_url = "${base}/v1"`,
         'wire_api = "responses"',
         `env_key = "OFM_API_KEY"`,

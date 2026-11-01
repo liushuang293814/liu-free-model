@@ -116,7 +116,7 @@ export async function startChanRelay({ config, log = () => {} }) {
     }
     const settings = config()
     if (!settings.enabled) {
-      openAiError(res, 503, 'service_unavailable', 'the channel-gateway relay is switched off in Our Free Model settings')
+      openAiError(res, 503, 'service_unavailable', 'the channel-gateway relay is switched off in liu-free-model settings')
       return
     }
     if (!keyMatches(bearerOf(req), settings.lanKey)) {

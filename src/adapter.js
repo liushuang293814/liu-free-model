@@ -38,8 +38,8 @@ export const ROUTE_REGION = 'our-free-model-fork-region'
 
 /** Group headings — the only strings the picker shows as a section title. */
 export const ROUTE_LABELS = {
-  [ROUTE_MAIN]: 'Our Free Model (fork)',
-  [ROUTE_REGION]: 'Our Free Model (fork) · region-limited',
+  [ROUTE_MAIN]: 'liu-free-model',
+  [ROUTE_REGION]: 'liu-free-model · region-limited',
 }
 
 const STYLE_FOR_WIRE = { chat: 'chat', responses: 'flat', messages: 'claude' }

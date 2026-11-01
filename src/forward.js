@@ -324,7 +324,7 @@ export async function startForwardServer({ config, complete, modelRows, log = ()
     const path = url.pathname.replace(/\/+$/, '') || '/'
     const settings = config()
     if (!settings.enabled) {
-      openAiError(res, 503, 'service_unavailable', 'the forward listener is switched off in Our Free Model settings')
+      openAiError(res, 503, 'service_unavailable', 'the forward listener is switched off in liu-free-model settings')
       return
     }
     // CORS preflight, so a browser-based harness on another origin can use it.
@@ -512,7 +512,7 @@ export async function startLanRelay({ config, log = () => {}, onTrace = () => {}
     }
     const settings = config()
     if (!settings.enabled) {
-      openAiError(res, 503, 'service_unavailable', 'the LAN relay is switched off in Our Free Model settings')
+      openAiError(res, 503, 'service_unavailable', 'the LAN relay is switched off in liu-free-model settings')
       return
     }
     if (!authorized(req, settings.lanKey)) {

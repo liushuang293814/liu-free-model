@@ -1,5 +1,5 @@
 /**
- * Our Free Model — browser half.
+ * liu-free-model — browser half.
  *
  * Contributes three things to the web shell:
  *   1. a settings section (`settings.section` id `our-free-model-fork`) holding the
@@ -42,11 +42,11 @@ window.__ModuleLoader__.load({
     // ── copy ──────────────────────────────────────────────────────────────────
     const DICT = {
       zh: {
-        'meta.title': 'Our Free Model',
+        'meta.title': 'liu-free-model',
         'meta.description': '在 DeepSeek Harness 内直连免密免费模型：清单随上游更新、地区可用性自动探测、思考强度真实生效，并附 Token 看板与 OpenAI 兼容转发端口。',
         'ann.pitch': '你只需在 dsh 里装上这个插件，无需登录、注册、填 API Key 或任何其它操作，就能用上包括 Muse Spark 1.3、MiMo V2.6 在内的前沿模型——完全免费，不限量。',
-        nav: 'Our Free Model',
-        title: 'Our Free Model',
+        nav: 'liu-free-model',
+        title: 'liu-free-model',
         refresh: '刷新清单',
         reprobe: '重新探测可用性',
         probing: '探测中…',
@@ -239,7 +239,7 @@ window.__ModuleLoader__.load({
         'ann.p1': '免密：安装即可用，不需要注册、不需要填任何 API Key。',
         'ann.p2': '清单跟随上游：模型集合、上下文长度与能力每次刷新都重新拉取。',
         'ann.p3': '诚实的能力声明：探测不出来的能力不会显示，思考强度档位是真实生效的输出预算上限。',
-        'ann.s1': '在输入框的模型选择器里选 “Our Free Model” 分组下的任意模型。',
+        'ann.s1': '在输入框的模型选择器里选 “liu-free-model” 分组下的任意模型。',
         'ann.s2': '需要更强推理时点开 Effort 档位；它是真实下发的输出预算，不是提示词。',
         'ann.s3': '想被其它本地工具调用：设置页 → 本地转发 → 启用，把 Base URL 和 Key 填进去。',
         'ann.s4': '地区受限模型会在你切换网络出口后自动重新归类，无需手动操作。',
@@ -458,7 +458,7 @@ window.__ModuleLoader__.load({
         'gw.relayKey': '中继密钥',
         'gw.rotate': '轮换',
         'gw.relayNote': '中继只放行模型接口（/v1/*），并要求携带中继密钥；局域网绑定意味着同网段的设备都能访问到这个端口。',
-        'gw.freeLaneNote': '免费车道（Our Free Model）自己的转发端口在「免费模型」页的「本地转发」分区。',
+        'gw.freeLaneNote': '免费车道（liu-free-model）自己的转发端口在「免费模型」页的「本地转发」分区。',
         'chan.credits.left': '剩余积分',
         'chan.credits.tokens': '剩余 Token',
         'chan.credits.dollars': '剩余余额（USD）',
@@ -655,11 +655,11 @@ window.__ModuleLoader__.load({
         'gw.clientsModels': '可转发模型 {n} 个',
       },
       en: {
-        'meta.title': 'Our Free Model',
+        'meta.title': 'liu-free-model',
         'meta.description': 'Free no-key models inside DeepSeek Harness: a roster that follows upstream, live regional availability, genuinely enforced thinking levels, a token dashboard and an OpenAI-compatible local forward port.',
         'ann.pitch': 'All you do is install this plugin in dsh — no login, no sign-up, no API key, no other step of any kind. The frontier models are simply there, Muse Spark 1.3 and MiMo V2.6 among them. Completely free, with no usage cap.',
-        nav: 'Our Free Model',
-        title: 'Our Free Model',
+        nav: 'liu-free-model',
+        title: 'liu-free-model',
         refresh: 'Refresh roster',
         reprobe: 'Re-probe availability',
         probing: 'Probing…',
@@ -852,7 +852,7 @@ window.__ModuleLoader__.load({
         'ann.p1': 'No credentials: install and use it — no sign-up, no API key to paste.',
         'ann.p2': 'The roster follows upstream: models, context lengths and capabilities are re-fetched on every refresh.',
         'ann.p3': 'Honest capability claims: anything a probe cannot confirm stays hidden, and each effort level is a real output budget.',
-        'ann.s1': 'Pick any model under the “Our Free Model” group in the composer’s model selector.',
+        'ann.s1': 'Pick any model under the “liu-free-model” group in the composer’s model selector.',
         'ann.s2': 'For harder reasoning, open the Effort menu — it sends a real budget, not a prompt hint.',
         'ann.s3': 'To serve other local tools: Settings → Local forward → enable, then copy the base URL and key.',
         'ann.s4': 'Region-limited models reclassify themselves once your network egress changes.',
@@ -1071,7 +1071,7 @@ window.__ModuleLoader__.load({
         'gw.relayKey': 'Relay key',
         'gw.rotate': 'Rotate',
         'gw.relayNote': 'The relay forwards only the model routes (/v1/*) and demands the relay key; binding to the LAN means every device on the network can reach that port.',
-        'gw.freeLaneNote': 'The free lane (Our Free Model) has its own forward port under "Local forward" on the Free models page.',
+        'gw.freeLaneNote': 'The free lane (liu-free-model) has its own forward port under "Local forward" on the Free models page.',
         'chan.credits.left': 'Credits left',
         'chan.credits.tokens': 'Tokens left',
         'chan.credits.dollars': 'Balance left (USD)',
@@ -1280,7 +1280,7 @@ window.__ModuleLoader__.load({
     // fallback for exactly that reason.
     const CSS = `
 /* ═══════════════════════════════════════════════════════════════════════
-   Our Free Model — visual system
+   liu-free-model — visual system
    统一令牌：所有色值取自宿主 --dsw-alias-* 变量，昼夜由宿主切换。
    层级约定：layer-3 凹槽/页面底 · layer-2 面板 · layer-1 浮起元素。
    动效约定：transform/opacity 优先；常规 150–300ms、覆盖层 300–400ms。
@@ -6069,7 +6069,7 @@ window.__ModuleLoader__.load({
             if (String(at) === seen) return
             try { window.localStorage?.setItem('ofm.reloadedAt', String(at)) } catch { /* ignore */ }
             showToast({
-              title: meta.version !== '' ? `Our Free Model ${meta.version}` : 'Our Free Model',
+              title: meta.version !== '' ? `liu-free-model ${meta.version}` : 'liu-free-model',
               body: t('reload.done').replace('{n}', String(meta.reloadCount ?? 0)),
               actions: [{ label: t('reload.refresh'), onClick: () => { try { window.location.reload() } catch { /* top-level navigation refused */ } } }],
               holdMs: 12000,
