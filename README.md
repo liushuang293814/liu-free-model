@@ -51,9 +51,10 @@ node verify.mjs
 
 ## 注意
 
-- **不再跟随 npm 更新**，这是二次开发版的代价。
+- **不再跟随 npm 更新**，这是二次开发版的代价。插件自带的上游自更新已关闭（`distribution: managed`）。
 - 用 `link:` 方式安装的，**别删或改名这个目录**，否则符号链接悬空、插件加载失败。
-- `src/` 是参考源码，改了不生效——运行时只加载 `index.js`、`client.js`、`vendor/channel-pack/pack.js`。
+- 配置和模型数据在 `~/.dsh/dsh-our-free-model-fork/`，与包名一致，卸载插件不会删除。
+- 可以直接改 `src/`：`index.js` 实际 import 了其中 29 个模块，都是运行时加载的。`vendor/channel-pack/pack.js` 同理。
 
 ## 许可证
 

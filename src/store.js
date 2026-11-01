@@ -27,7 +27,7 @@ export function resolveDshHome() {
   return path.join(os.homedir(), '.dsh')
 }
 
-export const DATA_DIR_NAME = 'our-free-model'
+export const DATA_DIR_NAME = 'dsh-our-free-model-fork'
 
 /** Bumped when the shape or the meaning of a stored field changes. */
 export const STATS_VERSION = 3
