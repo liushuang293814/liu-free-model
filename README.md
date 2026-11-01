@@ -15,6 +15,9 @@ buddy（CodeBuddy 国内版）和 workbuddy（国际版）会检查 `system` 消
 
 需要 DSH 桌面端（DeepSeek Harness）。
 
+> **装之前先卸载官方的 `dsh-our-free-model`。** 两个包共用同一个内部 id（`our-free-model`），
+> 同时存在会导致其中一个不加载。在插件面板里卸载即可。
+
 **1. 克隆**
 
 ```bash
