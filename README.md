@@ -26,12 +26,19 @@ DSH 里打开 **设置 → 插件 → 添加插件**，输入框直接粘贴仓�
 https://github.com/liushuang293814/liu-free-model
 ```
 
-也接受 `github:liushuang293814/liu-free-model`。DSH 会自己 git 拉取 + 装依赖，不用先 clone。
+国内网络访问 GitHub 不通时，换 Gitee 镜像（内容同步）：
+
+```
+git+https://gitee.com/liushuangliushuangliushuang/liu-free-model.git
+```
+
+GitHub 也接受 `github:liushuang293814/liu-free-model` 简写。DSH 会自己 git 拉取 + 装依赖，不用先 clone。
 
 想改成先 clone 再装本地目录（方便改 `src/`）也可以：
 
 ```bash
 git clone https://github.com/liushuang293814/liu-free-model.git
+# 国内：git clone https://gitee.com/liushuangliushuangliushuang/liu-free-model.git
 ```
 
 然后在同一个入口填该目录的**绝对路径**，例如 `D:/plugins/liu-free-model`。
